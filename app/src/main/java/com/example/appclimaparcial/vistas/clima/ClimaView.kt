@@ -314,17 +314,5 @@ fun ClimaViewPreview(){
     )
 }
 
-@Preview(showBackground = true)
-@Composable
-fun LoadingViewPreview() { LoadingView() }
 
-@Preview(showBackground = true)
-@Composable fun ErrorViewPreview() {
-    ErrorView(mensaje = "Ha ocurrido un error")
-}
-
-@Preview(showBackground = true)
-@Composable fun EmptyViewPreview() {
-    EmptyView()
-}
 

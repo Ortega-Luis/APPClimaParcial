@@ -42,6 +42,7 @@ import com.example.appclimaparcial.repositorio.modelos.Main
 import com.example.appclimaparcial.repositorio.modelos.MainForecast
 import com.example.appclimaparcial.vistas.clima.ClimaViewModel
 import com.example.appclimaparcial.vistas.clima.ErrorView
+import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -58,12 +59,16 @@ fun PronosticoView(
 
     }
     Text(
-        text = "Pronosticos"
+        text = "Pronosticos",
+        fontSize =30.sp,
+        style = MaterialTheme.typography.titleMedium,
+        modifier = Modifier
+            .padding(6.dp),
     )
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(20.dp),
+            .padding(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
