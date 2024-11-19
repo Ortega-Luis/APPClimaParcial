@@ -50,24 +50,6 @@ class ClimaViewModel(
         }
     }
 
-    fun compartirPronostico(context: Context, pronostico: ListForecast){
-        val shareIntent = Intent().apply {
-            action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT,generarTextoDeCompartir(pronostico))
-            type = "text/plain"
-        }
-        context.startActivity(Intent.createChooser(shareIntent, "Compartir pronostico"))
-    }
-
-    private fun generarTextoDeCompartir(pronostico: ListForecast): String{
-        return """
-            Pronostico del Clima:
-            - Actual: ${pronostico.main.temp}
-            - Minima: ${pronostico.main.temp_min}
-            - Maxima: ${pronostico.main.temp_max}
-            """.trimIndent()
-    }
-
 }
 
 class ClimaViewModelFactory(

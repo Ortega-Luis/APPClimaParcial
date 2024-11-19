@@ -1,6 +1,10 @@
 package com.example.appclimaparcial.vistas.clima
 
+import android.content.Intent
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,7 +21,9 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -34,7 +40,12 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.NotificationCompat.Style
@@ -47,10 +58,11 @@ import io.ktor.http.ContentType
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ClimaView(
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier.padding(top = 60.dp),
     state: ClimaEstado,
     onAction: (ClimaOpcion) -> Unit
 ){
+    var datoCompartir by remember { mutableStateOf("Compartir dato") }
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         onAction(ClimaOpcion.actualizarClima)
     }
@@ -73,7 +85,13 @@ fun ClimaView(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp)
 
-            ){
+            ){ Row {
+                Text(text = "Clima Actual",
+                    color = Color.White
+                )
+                Spacer(modifier = Modifier.padding(5.dp))
+                botonCompartir(textToShere = datoCompartir)
+            }
                 when(state){
                     ClimaEstado.Cargando -> LoadingView()
                     is ClimaEstado.Error -> ErrorView(mensaje = state.mensaje)
@@ -98,7 +116,31 @@ fun ClimaView(
     )
 }
 
+@Composable
+fun botonCompartir(textToShere : String){
+    val context = LocalContext.current
+    val shareLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) {_ -> context }
 
+    Button(
+        onClick = {
+            val sendIntent = Intent(Intent.ACTION_SEND).apply {
+                type= "text/plain"
+                putExtra(Intent.EXTRA_TEXT, textToShere)
+            }
+            val shareIntent = Intent.createChooser(sendIntent, null)
+            shareLauncher.launch(shareIntent)
+        },
+        modifier = Modifier.padding(4.dp)
+    ) {
+        Icon(
+            imageVector = Icons.Default.Share,
+            contentDescription = "Compartir",
+            tint = Color.White
+        )
+    }
+}
 
 @Composable
 fun EmptyView(){

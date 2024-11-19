@@ -76,7 +76,7 @@ fun CiudadesView(
                     .padding(paddingValues)
                     .padding(16.dp)
                     .fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(12.dp)
 
             ) {
                     OutlinedTextField(

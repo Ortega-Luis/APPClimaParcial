@@ -154,19 +154,21 @@ fun PronosticoListView(climas: List<ListForecast>){
         items(items = climas) {
             Card(modifier = Modifier
                 .padding(10.dp)
-                .fillMaxWidth()) {
+                .fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFF2196F3))
+            ) {
                 val fecha = convertirTimestamp(it.dt)
                 Text(text = fecha,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary)
+                    color = Color.White)
                 Text(text = "Temperatura: ${it.main.temp}º",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary)
+                    color = Color.White)
                 Text(text = "Minima: ${it.main.temp_min}º -> Maxima:${it.main.temp_max}º",
                     fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
+                    color = Color.White)
             }
         }
     }
