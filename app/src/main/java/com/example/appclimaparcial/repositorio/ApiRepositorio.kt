@@ -1,9 +1,15 @@
 package com.example.appclimaparcial.repositorio
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
 import androidx.compose.runtime.clearCompositionErrors
+import androidx.core.app.ActivityCompat
 import com.example.appclimaparcial.repositorio.modelos.Ciudad
 import com.example.appclimaparcial.repositorio.modelos.Clima
 import com.example.appclimaparcial.repositorio.modelos.ForecastDTO
 import com.example.appclimaparcial.repositorio.modelos.ListForecast
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -12,8 +18,11 @@ import io.ktor.client.request.parameter
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
-class ApiRepositorio : Repositorio{
+class ApiRepositorio: Repositorio{
 
     private val apiKey = "625f54f0ba19b17169903c58a48378f0"
 
@@ -56,12 +65,12 @@ class ApiRepositorio : Repositorio{
         }
     }
 
-    override suspend fun mostrarPronostico(nombre: String, lat: Float,lon: Float): List<ListForecast> {
+    override suspend fun mostrarPronostico(nombre: String): List<ListForecast> {
         val respuesta = cliente.get("https://api.openweathermap.org/data/2.5/forecast"){
             parameter("q", nombre)
             parameter("units", "metric")
-            parameter("lat",lat)
-            parameter("lon",lon)
+            parameter("ctn",20)
+            parameter("lang","sp")
             parameter("appid", apiKey)
         }
         if (respuesta.status == HttpStatusCode.OK){

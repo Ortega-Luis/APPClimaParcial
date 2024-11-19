@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -23,6 +24,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -76,34 +79,34 @@ fun CiudadesView(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
 
             ) {
-                OutlinedTextField(
-                    value = value,
-                    label = { Text(text = "Buscar por nombre", color = Color.White) },
-                    onValueChange = {
-                        value = it
-                        onAction(CiudadesOpciones.Buscar(value))
-                    },
-                    leadingIcon = {
-                        Icon(Icons.Default.Search, contentDescription = null)
-                    },
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color(0xFF2196F3),
-                        unfocusedBorderColor = Color(0xFFBBDEFB)
-                    ),
-                    modifier = Modifier.fillMaxWidth(),
-
-                    )
-                when (state) {
-                    CiudadesEstado.Cargando -> Text(text = "Cargando")
-                    is CiudadesEstado.Error -> Text(text = state.mensaje)
-                    is CiudadesEstado.Resultado -> ListaCiudades(state.ciudades) {
-                        onAction(
-                            CiudadesOpciones.Seleccionar(it)
+                    OutlinedTextField(
+                        value = value,
+                        label = { Text(text = "Buscar por nombre", color = Color.White) },
+                        onValueChange = {
+                            value = it
+                            onAction(CiudadesOpciones.Buscar(value))
+                        },
+                        leadingIcon = {
+                            Icon(Icons.Default.Search, contentDescription = null)
+                        },
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color(0xFF2196F3),
+                            unfocusedBorderColor = Color(0xFFBBDEFB)
+                        ),
+                        modifier = Modifier.fillMaxWidth(),
                         )
-                    }
 
-                    CiudadesEstado.Vacio -> Text(text = "No hay resultados")
-                }
+                    when (state) {
+                        CiudadesEstado.Cargando -> Text(text = "Cargando")
+                        is CiudadesEstado.Error -> Text(text = state.mensaje)
+                        is CiudadesEstado.Resultado -> ListaCiudades(state.ciudades) {
+                            onAction(
+                                CiudadesOpciones.Seleccionar(it)
+                            )
+                        }
+
+                        CiudadesEstado.Vacio -> Text(text = "No hay resultados")
+                    }
             }
         }
     )
@@ -133,6 +136,7 @@ fun ListaCiudades(ciudades: List<Ciudad>, onSelect: (Ciudad)-> Unit){
                     Icon(Icons.Default.Place, contentDescription = null)
                     Spacer(modifier = Modifier.width(16.dp))
                     Text(text = it.name, style = MaterialTheme.typography.bodyLarge, color = Color.White)
+                    Text(text = it.country, style = MaterialTheme.typography.bodyLarge, color = Color.White)
 
                 }
 

@@ -1,5 +1,6 @@
 package com.example.appclimaparcial.vistas.clima
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -34,10 +35,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.NotificationCompat.Style
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
+import com.example.appclimaparcial.R
 import io.ktor.client.request.request
 import io.ktor.http.ContentType
 
@@ -160,7 +163,19 @@ fun ErrorView(mensaje: String){
 
 
 @Composable
-fun ClimaDetailsView(ciudad: String, temperatura: Double, descripcion: String, st: Double, humedad: Long, viento:Double, icono: String, temp_max:Double,temp_min:Double){
+fun ClimaDetailsView(
+    ciudad: String,
+    temperatura: Double,
+    descripcion: String,
+    st: Double,
+    humedad: Long,
+    viento:Double,
+    icono: String,
+    temp_max:Double,
+    temp_min:Double
+){
+    val url = "https://openweathermap.org/img/wn/${icono}@2x.png"
+    Log.d( "ClimaDetailsView: ", "URL del icono: $url")
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
@@ -181,9 +196,9 @@ fun ClimaDetailsView(ciudad: String, temperatura: Double, descripcion: String, s
                 verticalArrangement = Arrangement.Center
             ) {
                 AsyncImage(
-                    model = "https://openweathermap.org/img/wn/${icono}@2x.png",
+                    model = url,
                     contentDescription = "Icono Clima Actual",
-                    modifier = Modifier.size(40.dp)
+                    modifier = Modifier.size(60.dp)
                 )
                 Text(
                     text = ciudad,

@@ -1,5 +1,6 @@
 package com.example.appclimaparcial.vistas.pronostico
 
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
@@ -18,8 +19,6 @@ class PronosticoViewModel(
     val repositorio: Repositorio,
     val router: Router,
     val nombre: String,
-    val lat: Float,
-    val lon: Float
 ): ViewModel(){
     var uiState by mutableStateOf<PronosticoEstado>(PronosticoEstado.Vacio)
 
@@ -30,37 +29,29 @@ class PronosticoViewModel(
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun traerPronostico(){
+    @SuppressLint("SuspiciousIndentation")
+    fun traerPronostico() {
         uiState = PronosticoEstado.Cargando
         viewModelScope.launch {
-            try {
-                val forecast = repositorio.mostrarPronostico(nombre,lat,lat).filter { pronostico ->
-                    val currentDate = LocalDate.now()
-                    val forecastDate = LocalDate.parse(pronostico.dt_txt.substring(0,10),
-                        DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-                    forecastDate == currentDate
-                }
+            try{
+                val forecast = repositorio.mostrarPronostico(nombre)
                 uiState = PronosticoEstado.Exito(forecast)
             } catch (exception: Exception){
-                uiState = PronosticoEstado.Error(exception.localizedMessage ?: "error")
+                uiState = PronosticoEstado.Error(exception.localizedMessage ?: "error desconocido")
             }
         }
     }
-
 }
 
 class PronosticoViewModelFactory(
     private val repositorio: Repositorio,
     private val router: Router,
     private val nombre: String,
-    private val lat: Float,
-    private val lon: Float
 ): ViewModelProvider.Factory {
     @Suppress("unchecked_cast")
     override fun <T : ViewModel> create(modelClass: Class<T>): T{
         if (modelClass.isAssignableFrom(PronosticoViewModel::class.java)){
-            return PronosticoViewModel(repositorio,router,nombre,lat,lon) as T
+            return PronosticoViewModel(repositorio,router,nombre) as T
         }
         throw IllegalArgumentException("unknown ViewModel Class")
     }

@@ -24,6 +24,7 @@ class CiudadesViewModel(
         when(opciones){
             is CiudadesOpciones.Buscar -> buscar(nombre = opciones.nombre)
             is  CiudadesOpciones.Seleccionar -> seleccionar(ciudad = opciones.ciudad)
+
         }
     }
 
@@ -52,6 +53,9 @@ class CiudadesViewModel(
         )
         router.navegar(ruta)
     }
+
+
+
 
     class CiudadesViewModelFactory(
         private val repositorio: Repositorio,

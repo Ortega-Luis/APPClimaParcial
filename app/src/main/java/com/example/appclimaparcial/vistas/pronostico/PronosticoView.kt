@@ -1,5 +1,7 @@
 package com.example.appclimaparcial.vistas.pronostico
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,8 +30,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -38,18 +42,24 @@ import com.example.appclimaparcial.repositorio.modelos.Main
 import com.example.appclimaparcial.repositorio.modelos.MainForecast
 import com.example.appclimaparcial.vistas.clima.ClimaViewModel
 import com.example.appclimaparcial.vistas.clima.ErrorView
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PronosticoView(
     modifier: Modifier = Modifier,
     state: PronosticoEstado,
-    viewModel: ClimaViewModel,
     onAction: (PronosticoOpcion) -> Unit
 ){
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         onAction(PronosticoOpcion.actualizarClima)
 
     }
+    Text(
+        text = "Pronosticos"
+    )
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -59,7 +69,7 @@ fun PronosticoView(
     ) {
         when (state){
             is PronosticoEstado.Error -> ErrorView(mensaje = state.mensaje)
-            is PronosticoEstado.Exito -> PronosticoListView(state.climas, viewModel)
+            is PronosticoEstado.Exito -> PronosticoListView(state.climas)
             PronosticoEstado.Vacio -> LoadingView()
             PronosticoEstado.Cargando -> EmptyView()
 
@@ -102,7 +112,7 @@ fun ErrorView(mensaje: String){
 
         )
         {
-            Icon(Icons.Default.Warning, contentDescription = null, tint = MaterialTheme.colorScheme.error)
+            Icon(Icons.Default.Warning, contentDescription = "Sin nada que mostrar", tint = MaterialTheme.colorScheme.error)
             Spacer(modifier = Modifier.height(16.dp))
             Text(text = mensaje, color = Color(0xFF2196F3), style = MaterialTheme.typography.bodyLarge)
 
@@ -126,43 +136,37 @@ fun LoadingView(){
         }
     }
 }
+
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun PronosticoListView(climas: List<ListForecast>, viewModel: ClimaViewModel){
-    val context = LocalContext.current
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(vertical = 8.dp)
-    ){
-        items(items = climas) { clima ->
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp),
-                shape = RoundedCornerShape(16.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFFBBDEFB))
+fun convertirTimestamp(timestamp: Long): String {
+    val instant = Instant.ofEpochSecond(timestamp)
+    val formatter = DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm")
+        .withZone(ZoneId.systemDefault())
+    return formatter.format(instant)
+}
 
 
-            ) {
-                Column(
-                    modifier = Modifier
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-
-                ) {
-                    Text(text = "Fecha: ${clima.dt_txt}",color = Color(0xFF2196F3), style = MaterialTheme.typography.bodyMedium)
-                    Text(text = "Maxima: ${clima.main.temp_min}", style = MaterialTheme.typography.bodyMedium)
-                    Text(text = "Maxima: ${clima.main.temp_max}", style = MaterialTheme.typography.bodyMedium)
-
-                    Button(
-                        onClick = {
-                            viewModel.compartirPronostico(context, clima )
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp)
-                    ) { Text("Compartir")}
-                }
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun PronosticoListView(climas: List<ListForecast>){
+    LazyColumn {
+        items(items = climas) {
+            Card(modifier = Modifier
+                .padding(10.dp)
+                .fillMaxWidth()) {
+                val fecha = convertirTimestamp(it.dt)
+                Text(text = fecha,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary)
+                Text(text = "Temperatura: ${it.main.temp}º",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary)
+                Text(text = "Minima: ${it.main.temp_min}º -> Maxima:${it.main.temp_max}º",
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
             }
         }
     }

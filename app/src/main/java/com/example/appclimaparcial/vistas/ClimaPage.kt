@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.appclimaparcial.repositorio.ApiRepositorio
@@ -38,8 +39,6 @@ fun ClimaPage(
             repositorio = ApiRepositorio(),
             router = Enrutador(navController),
             nombre= nombre,
-            lat = lat,
-            lon = lon
         )
     )
 
@@ -51,7 +50,6 @@ fun ClimaPage(
         )
         PronosticoView(
             state = pronosticoViewModel.uiState,
-            viewModel = viewModel,
             onAction = {opciones -> pronosticoViewModel.ejecutar(opciones)}
         )
 
