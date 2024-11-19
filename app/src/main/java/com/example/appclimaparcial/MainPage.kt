@@ -41,11 +41,13 @@ fun MainPage(modifier: Modifier = Modifier) {
         modifier = modifier,
         floatingActionButton  = {
             FloatingActionButton(
-                onClick = { navHostController.navigate("ciudades")}
+                onClick = { navHostController.navigate("ciudades")},
+                containerColor = Color(0xFF2196F3)
             ) {
                 Icon(Icons.Filled.ArrowBack,
                     contentDescription = "Inicio",
-                    tint = Color(0xFF2196F3)
+
+                    tint = Color.White
 
                 )
             }
