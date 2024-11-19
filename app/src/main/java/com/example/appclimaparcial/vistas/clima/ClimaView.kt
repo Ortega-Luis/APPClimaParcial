@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -24,6 +25,7 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -48,6 +50,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
 import androidx.core.app.NotificationCompat.Style
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
@@ -58,7 +61,7 @@ import io.ktor.http.ContentType
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ClimaView(
-    modifier: Modifier = Modifier.padding(top = 60.dp),
+    modifier: Modifier = Modifier.padding(top = 10.dp),
     state: ClimaEstado,
     onAction: (ClimaOpcion) -> Unit
 ){
@@ -66,29 +69,19 @@ fun ClimaView(
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         onAction(ClimaOpcion.actualizarClima)
     }
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {Text("Pronostico del Clima")},
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF2196F3),
-                    titleContentColor = Color.White
-                )
-            )
-        },
-        content = { paddingValues ->
             Column (
                 modifier = modifier
-                    .fillMaxWidth()
-                    .padding(paddingValues)
-                    .padding(20.dp),
+                    .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp)
 
-            ){ Row {
-                Text(text = "Clima Actual",
-                    color = Color.White
-                )
+            ){ Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
                 Spacer(modifier = Modifier.padding(5.dp))
                 botonCompartir(textToShere = datoCompartir)
             }
@@ -107,14 +100,13 @@ fun ClimaView(
                         temp_min = state.temp_min
 
                     )
+                    ClimaEstado.Cargando -> LoadingView()
                     ClimaEstado.Vacio -> EmptyView()
                 }
-                Spacer(modifier = Modifier.height(100.dp))
+
             }
 
         }
-    )
-}
 
 @Composable
 fun botonCompartir(textToShere : String){
@@ -132,13 +124,17 @@ fun botonCompartir(textToShere : String){
             val shareIntent = Intent.createChooser(sendIntent, null)
             shareLauncher.launch(shareIntent)
         },
-        modifier = Modifier.padding(4.dp)
+        modifier = Modifier
+            .padding(4.dp)
+            .width(150.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3))
     ) {
         Icon(
             imageVector = Icons.Default.Share,
             contentDescription = "Compartir",
-            tint = Color.White
+            tint = Color.White,
         )
+        Spacer(modifier = Modifier.width(8.dp))
     }
 }
 
@@ -240,7 +236,7 @@ fun ClimaDetailsView(
                 AsyncImage(
                     model = url,
                     contentDescription = "Icono Clima Actual",
-                    modifier = Modifier.size(60.dp)
+                    modifier = Modifier.size(10.dp)
                 )
                 Text(
                     text = ciudad,
@@ -331,3 +327,4 @@ fun LoadingViewPreview() { LoadingView() }
 @Composable fun EmptyViewPreview() {
     EmptyView()
 }
+
